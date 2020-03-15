@@ -6,27 +6,43 @@ export default function CountrySelector() {
   const { stats: countries, loading, error } = useStats(
     'https://covid19.mathdro.id/api/countries'
   )
-  const [selectedCountry, setSelectedCountry] = useState('IE')
+  const [selectedCountry, setSelectedCountry] = useState('IRL')
+  const [selectedLongName, setSelectedLongName] = useState('Ireland')
+
+  // useEffect(() => {
+  //   if (!firstRender.current) {
+  //     console.log(countries)
+  //     let longName = Object.keys(countries.countries).find(
+  //       country => countries.iso3[country] === 'selctedCountry'
+  //     )
+  //     console.log(longName)
+  //   }
+  //   firstRender.current = false
+  // }, [selectedCountry])
+
   if (!countries) {
     return <p>Loading...</p>
   }
   return (
     <div>
-      <h4>Currently Showing {selectedCountry}</h4>
-      <select onChange={e => setSelectedCountry(e.target.value)}>
+      {selectedCountry}
+      <h4>Currently Showing {selectedLongName}</h4>
+      <select
+        value={selectedCountry}
+        onChange={e => {
+          setSelectedCountry(e.target.value)
+          setSelectedLongName(e.currentTarget.selectedOptions[0].text)
+        }}
+      >
         {Object.entries(countries.countries).map(([country, code]) => {
           return (
-            <option
-              key={code}
-              // selected={selectedCountry}
-              value={countries.iso3[code]}
-            >
+            <option key={code} value={countries.iso3[code]}>
               {country}
             </option>
           )
         })}
       </select>
-      {!error && (
+      {!loading && (
         <Stats
           url={`https://covid19.mathdro.id/api/countries/${selectedCountry}`}
         />
