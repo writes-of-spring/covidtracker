@@ -8,13 +8,13 @@ function useStats(url) {
     async function fetchData() {
       console.log('Fetching Data')
       setLoading(true)
-      try {
-        const data = await fetch(url).then(res => res.json())
-        setStats(data)
-        setLoading(false)
-      } catch (error) {
-        setError(true)
-      }
+      const data = await fetch(url)
+        .then(res => res.json())
+        .catch(err => {
+          setError(err)
+        })
+      setStats(data)
+      setLoading(false)
     }
     fetchData()
   }, [url])
