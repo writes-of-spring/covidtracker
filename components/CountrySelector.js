@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Stats from './Stats'
 import useStats from '../hooks/useStats'
 
 export default function CountrySelector() {
-  const { stats: countries, loading, error } = useStats(
+  const firstRender = useRef(true)
+  const { stats: countries, loading } = useStats(
     'https://covid19.mathdro.id/api/countries'
   )
   const [selectedCountry, setSelectedCountry] = useState('IRL')
   const [selectedLongName, setSelectedLongName] = useState('Ireland')
 
-  // useEffect(() => {
-  //   if (!firstRender.current) {
-  //     console.log(countries)
-  //     let longName = Object.keys(countries.countries).find(
-  //       country => countries.iso3[country] === 'selctedCountry'
-  //     )
-  //     console.log(longName)
-  //   }
-  //   firstRender.current = false
-  // }, [selectedCountry])
+  useEffect(() => {
+    if (!firstRender.current) {
+      let longName = Object.keys(countries.countries).find(
+        country =>
+          countries.iso3[countries.countries[country]] === selectedCountry
+      )
+      console.log(longName)
+    }
+  }, [selectedCountry])
 
   if (!countries) {
     return <p>Loading...</p>
