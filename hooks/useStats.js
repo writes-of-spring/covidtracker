@@ -18,6 +18,6 @@ function useStats(url) {
     }
     fetchData()
   }, [url])
-  return { stats, loading, error }
+  return [stats, loading, error]
 }
 export default useStats

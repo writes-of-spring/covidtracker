@@ -8,7 +8,7 @@ const StatsWrapper = styled.div`
 `
 
 export default function Stats({ url }) {
-  const { stats, loading } = useStats(url)
+  const [stats, loading] = useStats(url)
   if (!stats) {
     return <p>Loading...</p>
   }

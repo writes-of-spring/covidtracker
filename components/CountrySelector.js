@@ -4,7 +4,7 @@ import useStats from '../hooks/useStats'
 
 export default function CountrySelector() {
   const firstRender = useRef(true)
-  const { stats: countries, loading } = useStats(
+  const [options, loading] = useStats(
     'https://covid19.mathdro.id/api/countries'
   )
   const [selectedCountry, setSelectedCountry] = useState('IRL')
@@ -12,32 +12,30 @@ export default function CountrySelector() {
 
   useEffect(() => {
     if (!firstRender.current) {
-      let longName = Object.keys(countries.countries).find(
-        country =>
-          countries.iso3[countries.countries[country]] === selectedCountry
+      let { name } = options.countries.find(
+        country => country.iso3 === selectedCountry
       )
-      console.log(longName)
+      setSelectedLongName(name)
     }
+    firstRender.current = false
   }, [selectedCountry])
 
-  if (!countries) {
+  if (!options) {
     return <p>Loading...</p>
   }
   return (
     <div>
-      {selectedCountry}
       <h4>Currently Showing {selectedLongName}</h4>
       <select
         value={selectedCountry}
         onChange={e => {
           setSelectedCountry(e.target.value)
-          setSelectedLongName(e.currentTarget.selectedOptions[0].text)
         }}
       >
-        {Object.entries(countries.countries).map(([country, code]) => {
+        {options.countries.map(country => {
           return (
-            <option key={code} value={countries.iso3[code]}>
-              {country}
+            <option key={country.iso3} value={country.iso3}>
+              {country.name}
             </option>
           )
         })}
